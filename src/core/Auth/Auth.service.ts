@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { HttpStatus } from '@nestjs/common/enums'
-import { HttpException, UnauthorizedException } from '@nestjs/common/exceptions'
+import { UnauthorizedException } from '@nestjs/common/exceptions'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcryptjs'
 import { SALT } from 'src/constants/common'
 
 import { UsersService } from '../Users/Users.service'
 import { User } from '../Users/schemas/user.schema'
-import { TLoginData, TUserRegistration } from './types'
+import { TAuthResponseData, TLoginData, TUserRegistration } from './types'
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async registration(userRegistrationData: TUserRegistration) {
+  async registration(
+    userRegistrationData: TUserRegistration,
+  ): Promise<TAuthResponseData> {
     const hashPassword = await bcrypt.hash(userRegistrationData.password, SALT)
     const createdUser = await this.usersService.createUser({
       ...userRegistrationData,
@@ -28,7 +29,7 @@ export class AuthService {
     return tokens
   }
 
-  async login(loginData: TLoginData) {
+  async login(loginData: TLoginData): Promise<TAuthResponseData> {
     const user = await this.usersService.getUserByEmail(loginData.email)
 
     console.log(user)
@@ -55,7 +56,7 @@ export class AuthService {
     return tokens
   }
 
-  private async generateTokens(user: User) {
+  private async generateTokens(user: User): Promise<TAuthResponseData> {
     return {
       access_token: this.jwtService.sign({ email: user.email }),
       refresh_token: this.jwtService.sign(
