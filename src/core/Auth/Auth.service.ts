@@ -6,6 +6,7 @@ import { SALT } from 'src/constants/common'
 
 import { UsersService } from '../Users/Users.service'
 import { User } from '../Users/schemas/user.schema'
+import { TUserRole } from '../Users/types'
 import { TAuthResponseData, TLoginData, TUserRegistration } from './types'
 
 @Injectable()
@@ -19,10 +20,13 @@ export class AuthService {
     userRegistrationData: TUserRegistration,
   ): Promise<TAuthResponseData> {
     const hashPassword = await bcrypt.hash(userRegistrationData.password, SALT)
-    const createdUser = await this.usersService.createUser({
-      ...userRegistrationData,
-      password: hashPassword,
-    })
+    const createdUser = await this.usersService.createUser(
+      {
+        ...userRegistrationData,
+        password: hashPassword,
+      },
+      TUserRole.User,
+    )
 
     const tokens = this.generateTokens(createdUser)
 

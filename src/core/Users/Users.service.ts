@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { getDbParams } from 'src/helpers/handleGridParams'
+import { TQueryGridParams } from 'src/types/gridParams'
 
 import { User, UserDocument } from './schemas/user.schema'
-import { TCreateUserData } from './types'
+import { TCreateUserData, TUserRole } from './types'
 
 @Injectable()
 export class UsersService {
@@ -13,7 +15,10 @@ export class UsersService {
     return this.userModel.findOne({ email: email }).exec()
   }
 
-  public async createUser(createUserData: TCreateUserData): Promise<User> {
+  public async createUser(
+    createUserData: TCreateUserData,
+    role: TUserRole,
+  ): Promise<User> {
     const user = await this.getUserByEmail(createUserData.email)
 
     if (user) {
@@ -26,8 +31,26 @@ export class UsersService {
       )
     }
 
-    const newUser = new this.userModel(createUserData)
+    const newUser = new this.userModel({
+      createUserData,
+      role,
+      created: Date.now(),
+    })
 
     return newUser.save()
+  }
+
+  public async getUsersList(params?: TQueryGridParams) {
+    console.log(params)
+    const { pagination, filters } = getDbParams(params)
+
+    console.log(filters)
+    const users = await this.userModel.find({ ...filters }, null, pagination)
+    const count = await this.userModel.count()
+
+    return {
+      list: users,
+      count,
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/auth/registration": {
+    "/api/auth/registration": {
       "post": {
         "operationId": "AuthController_registration",
         "parameters": [],
@@ -42,7 +42,7 @@
         "tags": ["Authorization Controller"]
       }
     },
-    "/auth/login": {
+    "/api/auth/login": {
       "post": {
         "operationId": "AuthController_login",
         "parameters": [],
@@ -65,6 +65,74 @@
           }
         },
         "tags": ["Authorization Controller"]
+      }
+    },
+    "/api/users/list": {
+      "get": {
+        "operationId": "UsersController_getUsersList",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "explode": true,
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "example": { "field": "level", "values": ["Junior", "Middle"] },
+                "$ref": "#/components/schemas/TFilter"
+              }
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "explode": true,
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "example": {
+                "searchValue": "test",
+                "searchFields": ["first_name"]
+              },
+              "$ref": "#/components/schemas/TSearch"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TErrorResponseBody" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TErrorResponseBody" }
+              }
+            }
+          }
+        },
+        "tags": ["Users Controller"]
       }
     }
   },
