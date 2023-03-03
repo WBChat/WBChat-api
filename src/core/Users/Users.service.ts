@@ -32,7 +32,7 @@ export class UsersService {
     }
 
     const newUser = new this.userModel({
-      createUserData,
+      ...createUserData,
       role,
       created: Date.now(),
     })
