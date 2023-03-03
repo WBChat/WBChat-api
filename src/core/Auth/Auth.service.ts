@@ -39,7 +39,7 @@ export class AuthService {
     console.log(user)
     if (!user) {
       throw new UnauthorizedException({
-        error: 'Email or password is not valid.',
+        message: 'Email or password is not valid.',
       })
     }
 
@@ -47,11 +47,10 @@ export class AuthService {
       loginData.password,
       user.password,
     )
-    console.log(passwordEqual)
 
     if (!passwordEqual) {
       throw new UnauthorizedException({
-        error: 'Email or password is not valid.',
+        message: 'Email or password is not valid.',
       })
     }
 
