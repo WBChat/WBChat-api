@@ -1,5 +1,9 @@
 import { applyDecorators } from '@nestjs/common'
-import { ApiBadRequestResponse, ApiUnauthorizedResponse } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger'
 
 import { TErrorResponseBody } from '../types/errorResponse'
 
@@ -11,6 +15,10 @@ export const ApiErrorResponse = () => {
     }),
     ApiUnauthorizedResponse({
       description: 'Unauthorized',
+      type: TErrorResponseBody,
+    }),
+    ApiInternalServerErrorResponse({
+      description: 'Internal server error',
       type: TErrorResponseBody,
     }),
   )

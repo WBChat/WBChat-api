@@ -36,7 +36,6 @@ export class AuthService {
   async login(loginData: TLoginData): Promise<TAuthResponseData> {
     const user = await this.usersService.getUserByEmail(loginData.email)
 
-    console.log(user)
     if (!user) {
       throw new UnauthorizedException({
         message: 'Email or password is not valid.',
