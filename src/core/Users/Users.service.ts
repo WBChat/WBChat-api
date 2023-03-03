@@ -41,10 +41,8 @@ export class UsersService {
   }
 
   public async getUsersList(params?: TQueryGridParams) {
-    console.log(params)
     const { pagination, filters } = getDbParams(params)
 
-    console.log(filters)
     const users = await this.userModel.find({ ...filters }, null, pagination)
     const count = await this.userModel.count()
 

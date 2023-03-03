@@ -1,6 +1,11 @@
 import { applyDecorators } from '@nestjs/common'
 import { ApiQuery, getSchemaPath } from '@nestjs/swagger'
-import { TFilter, TSearch } from 'src/types/gridParams'
+import {
+  FilterModel,
+  SearchModel,
+  TFilter,
+  TSearch,
+} from 'src/types/gridParams'
 
 export const GridQueryParams = () => {
   return applyDecorators(
@@ -19,12 +24,11 @@ export const GridQueryParams = () => {
       required: false,
       explode: true,
       style: 'form',
+      example: ['{ "field": "level", "values": ["Junior"] }'],
       schema: {
         type: 'array',
         items: {
-          type: 'object',
-          example: { field: 'level', values: ['Junior', 'Middle'] },
-          $ref: getSchemaPath(TFilter),
+          $ref: getSchemaPath(FilterModel),
         },
       },
     }),
@@ -33,10 +37,9 @@ export const GridQueryParams = () => {
       required: false,
       explode: true,
       style: 'form',
+      example: { searchValue: '', searchFields: ['level'] },
       schema: {
-        type: 'object',
-        example: { searchValue: 'test', searchFields: ['first_name'] },
-        $ref: getSchemaPath(TSearch),
+        $ref: getSchemaPath(SearchModel),
       },
     }),
   )

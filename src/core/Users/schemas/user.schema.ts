@@ -9,6 +9,9 @@ export type UserDocument = User & Document
 @Schema({ collection: 'users' })
 export class User extends TUserRegistration {
   @Prop({ required: true, type: 'string' })
+  _id: string
+
+  @Prop({ required: true, type: 'string' })
   password: string
 
   @Prop({ required: true, enum: TUserRole })

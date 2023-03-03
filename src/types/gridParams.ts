@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer'
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger'
 
 export class TPagination {
   pageSize: number
@@ -16,12 +16,6 @@ export class TSearch {
   searchFields: string[]
 }
 
-export class TGridParams {
-  pagination?: TPagination
-  filters?: TFilter[]
-  search?: TSearch
-}
-
 export class TQueryGridParams {
   page?: number
   pageSize?: number
@@ -29,3 +23,14 @@ export class TQueryGridParams {
   searchValue: string
   searchFields: string[]
 }
+
+export class TGridResponse {
+  @ApiProperty({ type: Number })
+  count: number
+}
+
+@ApiExtraModels(TSearch)
+export class SearchModel {}
+
+@ApiExtraModels(TFilter)
+export class FilterModel {}
