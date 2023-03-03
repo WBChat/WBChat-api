@@ -89,13 +89,10 @@
             "in": "query",
             "explode": true,
             "style": "form",
+            "example": ["{ \"field\": \"level\", \"values\": [\"Junior\"] }"],
             "schema": {
               "type": "array",
-              "items": {
-                "type": "object",
-                "example": { "field": "level", "values": ["Junior", "Middle"] },
-                "$ref": "#/components/schemas/TFilter"
-              }
+              "items": { "$ref": "#/components/schemas/FilterModel" }
             }
           },
           {
@@ -104,17 +101,19 @@
             "in": "query",
             "explode": true,
             "style": "form",
-            "schema": {
-              "type": "object",
-              "example": {
-                "searchValue": "test",
-                "searchFields": ["first_name"]
-              },
-              "$ref": "#/components/schemas/TSearch"
-            }
+            "example": { "searchValue": "", "searchFields": ["level"] },
+            "schema": { "$ref": "#/components/schemas/SearchModel" }
           }
         ],
         "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UsersListResponse" }
+              }
+            }
+          },
           "400": {
             "description": "Bad request",
             "content": {
@@ -218,7 +217,19 @@
           "password": { "type": "string" }
         },
         "required": ["email", "password"]
-      }
+      },
+      "UsersListResponse": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number" },
+          "list": { "type": "array", "items": { "type": "array" } }
+        },
+        "required": ["count", "list"]
+      },
+      "TSearch": { "type": "object", "properties": {} },
+      "SearchModel": { "type": "object", "properties": {} },
+      "TFilter": { "type": "object", "properties": {} },
+      "FilterModel": { "type": "object", "properties": {} }
     }
   }
 }
