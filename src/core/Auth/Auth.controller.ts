@@ -21,6 +21,7 @@ export class AuthController {
   @Post('/login')
   @ApiBody({ type: TLoginData })
   @ApiOkResponse({ type: TAuthResponseData })
+  @ApiErrorResponse()
   login(@Body() loginData: TLoginData) {
     return this.authService.login(loginData)
   }
