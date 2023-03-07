@@ -14,6 +14,12 @@ export class User extends TUserRegistration {
   @Prop({ required: true, enum: TUserRole })
   role: TUserRole
 
+  @Prop({ required: true, type: String })
+  status: string
+
+  @Prop({ required: true, type: String })
+  avatar: string
+
   @Prop({ required: true, type: Number })
   created: number
 }

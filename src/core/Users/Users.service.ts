@@ -30,6 +30,8 @@ export class UsersService {
     const newUser = new this.userModel({
       ...createUserData,
       role,
+      status: '',
+      avatar: '',
       created: Date.now(),
     })
 
@@ -41,7 +43,16 @@ export class UsersService {
   ): Promise<UsersListResponse> {
     const { pagination, filters } = getDbParams<UserDocument>(params)
 
-    const users = await this.userModel.find(filters ?? {}, null, pagination)
+    const users = (
+      await this.userModel.find(filters ?? {}, null, pagination)
+    ).map((user: User) => ({
+      first_name: user.first_name,
+      last_name: user.last_name,
+      avatar: user.avatar,
+      status: user.status,
+      created: user.created,
+    }))
+
     const count = await this.userModel.count()
 
     return {
