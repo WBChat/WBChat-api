@@ -19,7 +19,10 @@ export class AuthService {
   async registration(
     userRegistrationData: TUserRegistration,
   ): Promise<TAuthResponseData> {
-    const hashPassword = await bcrypt.hash(userRegistrationData.password, SALT)
+    const hashPassword = (await bcrypt.hash(
+      userRegistrationData.password,
+      SALT,
+    )) as string
     const createdUser = await this.usersService.createUser(
       {
         ...userRegistrationData,
@@ -42,10 +45,10 @@ export class AuthService {
       })
     }
 
-    const passwordEqual = await bcrypt.compare(
+    const passwordEqual = (await bcrypt.compare(
       loginData.password,
       user.password,
-    )
+    )) as boolean
 
     if (!passwordEqual) {
       throw new UnauthorizedException({
@@ -58,13 +61,13 @@ export class AuthService {
     return tokens
   }
 
-  private async generateTokens(user: User): Promise<TAuthResponseData> {
+  private generateTokens(user: User): TAuthResponseData {
     return {
       access_token: this.jwtService.sign({ email: user.email }),
       refresh_token: this.jwtService.sign(
         { email: user.email },
         {
-          secret: process.env.JWT_REFRESH_SECRET || '',
+          secret: process.env.JWT_REFRESH_SECRET ?? '',
         },
       ),
     }

@@ -4,7 +4,7 @@ import { TGridResponse } from 'src/types/gridParams'
 import { TUserRegistration } from '../Auth/types'
 import { User } from './schemas/user.schema'
 
-export type TCreateUserData = {} & TUserRegistration
+export type TCreateUserData = TUserRegistration
 
 export enum TUserRole {
   Admin = 'admin',
@@ -18,4 +18,8 @@ export class UserData extends TUserRegistration {
 export class UsersListResponse extends TGridResponse {
   @ApiProperty({ type: [User] })
   list: User[]
+}
+
+export interface UserTokenPayload {
+  email: string
 }

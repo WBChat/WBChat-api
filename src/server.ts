@@ -5,8 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import { FilterModel, SearchModel } from './types/gridParams'
 
-async function bootstrap() {
-  const PORT = process.env.PORT || 7071
+async function bootstrap(): Promise<void> {
+  const PORT = process.env.PORT ?? 7071
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: ['http://localhost:3000'],

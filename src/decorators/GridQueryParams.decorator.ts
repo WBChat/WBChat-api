@@ -1,11 +1,6 @@
 import { applyDecorators } from '@nestjs/common'
 import { ApiQuery, getSchemaPath } from '@nestjs/swagger'
-import {
-  FilterModel,
-  SearchModel,
-  TFilter,
-  TSearch,
-} from 'src/types/gridParams'
+import { FilterModel, SearchModel } from 'src/types/gridParams'
 
 export const GridQueryParams = () => {
   return applyDecorators(

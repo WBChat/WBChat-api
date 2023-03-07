@@ -14,7 +14,9 @@ export class AuthController {
   @ApiBody({ type: TUserRegistration })
   @ApiOkResponse({ type: TAuthResponseData, status: 201 })
   @ApiErrorResponse()
-  registration(@Body() userRegistrationData: TUserRegistration) {
+  registration(
+    @Body() userRegistrationData: TUserRegistration,
+  ): Promise<TAuthResponseData> {
     return this.authService.registration(userRegistrationData)
   }
 
@@ -22,7 +24,7 @@ export class AuthController {
   @ApiBody({ type: TLoginData })
   @ApiOkResponse({ type: TAuthResponseData })
   @ApiErrorResponse()
-  login(@Body() loginData: TLoginData) {
+  login(@Body() loginData: TLoginData): Promise<TAuthResponseData> {
     return this.authService.login(loginData)
   }
 }

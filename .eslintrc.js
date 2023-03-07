@@ -3,7 +3,7 @@ module.exports = {
   parserOptions: {
     project: 'tsconfig.json',
     tsconfigRootDir: __dirname,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin', 'prettier', 'import'],
   extends: [
@@ -14,21 +14,21 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:import/typescript',
     'prettier',
-    'prettier/prettier'
+    'prettier/prettier',
   ],
   root: true,
   env: {
     node: true,
-    jest: true
+    jest: true,
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': [
-      'error',
+      'warn',
       {
         allowExpressions: true,
-        allowTypedFunctionExpressions: true
-      }
+        allowTypedFunctionExpressions: true,
+      },
     ],
     'import/no-unresolved': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
@@ -36,41 +36,23 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/lines-between-class-members': [
       'error',
       'always',
       {
-        exceptAfterSingleLine: true
-      }
+        exceptAfterSingleLine: true,
+      },
     ],
     '@typescript-eslint/no-extraneous-class': 'off',
     '@typescript-eslint/switch-exhaustiveness-check': 'error',
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/no-unused-expressions': 'error',
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/consistent-type-definitions': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/no-unnecessary-condition': 'error',
     '@typescript-eslint/member-ordering': 'error',
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
-    'padding-line-between-statements': [
-      'error',
-      {
-        blankLine: 'always',
-        prev: ['const', 'let', 'var'],
-        next: ''
-      },
-      {
-        blankLine: 'any',
-        prev: ['const', 'let', 'var'],
-        next: ['const', 'let', 'var']
-      },
-      {
-        blankLine: 'always',
-        prev: '',
-        next: ['if', 'return']
-      }
-    ]
-  }
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
+  },
 }

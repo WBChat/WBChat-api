@@ -10,7 +10,7 @@ import { UsersModule } from './core/Users/Users.module'
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
-    MongooseModule.forRoot(process.env.DB_CONNECTION_URL || '', {
+    MongooseModule.forRoot(process.env.DB_CONNECTION_URL ?? '', {
       dbName: 'web-beer-chat-dev',
     }),
   ],

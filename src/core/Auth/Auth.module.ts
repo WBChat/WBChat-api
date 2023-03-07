@@ -10,7 +10,7 @@ import { AuthService } from './Auth.service'
   imports: [
     forwardRef(() => UsersModule),
     JwtModule.registerAsync({
-      useFactory: async () => ({
+      useFactory: () => ({
         secret: process.env.JWT_SECRET,
         signOptions: {
           expiresIn: ACCESS_TOKEN_EXPIRES,
