@@ -63,9 +63,9 @@ export class AuthService {
 
   private generateTokens(user: User): TAuthResponseData {
     return {
-      access_token: this.jwtService.sign({ email: user.email }),
+      access_token: this.jwtService.sign({ email: user.email, _id: user._id }),
       refresh_token: this.jwtService.sign(
-        { email: user.email },
+        { email: user.email, _id: user._id },
         {
           secret: process.env.JWT_REFRESH_SECRET ?? '',
         },

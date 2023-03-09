@@ -34,4 +34,9 @@ export class UsersListResponse extends TGridResponse {
 
 export interface UserTokenPayload {
   email: string
+  _id: string
+}
+
+export interface GetUsersParams {
+  direct: boolean
 }

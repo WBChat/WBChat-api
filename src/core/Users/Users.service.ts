@@ -4,8 +4,14 @@ import { Model } from 'mongoose'
 import { getDbParams } from 'src/helpers/handleGridParams'
 import { TQueryGridParams } from 'src/types/gridParams'
 
+import { getUserViewData } from './helpers'
 import { User, UserDocument } from './schemas/user.schema'
-import { TCreateUserData, TUserRole, UsersListResponse } from './types'
+import {
+  GetUsersParams,
+  TCreateUserData,
+  TUserRole,
+  UsersListResponse,
+} from './types'
 
 @Injectable()
 export class UsersService {
@@ -39,19 +45,20 @@ export class UsersService {
   }
 
   public async getUsersList(
-    params?: TQueryGridParams,
+    params?: TQueryGridParams & GetUsersParams,
   ): Promise<UsersListResponse> {
     const { pagination, filters } = getDbParams<UserDocument>(params)
 
+    if (params?.direct) {
+      return {
+        list: [],
+        count: 0,
+      }
+    }
+
     const users = (
       await this.userModel.find(filters ?? {}, null, pagination)
-    ).map((user: User) => ({
-      first_name: user.first_name,
-      last_name: user.last_name,
-      avatar: user.avatar,
-      status: user.status,
-      created: user.created,
-    }))
+    ).map(getUserViewData)
 
     const count = await this.userModel.count()
 
