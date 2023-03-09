@@ -1,5 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger'
 import { ApiErrorResponse } from 'src/decorators/ErrorResponse.decorator'
 import { GridQueryParams } from 'src/decorators/GridQueryParams.decorator'
 import { TQueryGridParams } from 'src/types/gridParams'
@@ -17,6 +22,7 @@ export class UsersController {
   @ApiErrorResponse()
   @UseGuards(AuthGuard)
   @ApiOkResponse({ type: UsersListResponse, status: 200 })
+  @ApiBearerAuth()
   @GridQueryParams()
   @ApiQuery({
     name: 'direct',

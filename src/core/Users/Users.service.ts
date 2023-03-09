@@ -49,7 +49,7 @@ export class UsersService {
   ): Promise<UsersListResponse> {
     const { pagination, filters } = getDbParams<UserDocument>(params)
 
-    if (params?.direct) {
+    if (params?.direct === 'true') {
       return {
         list: [],
         count: 0,

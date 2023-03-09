@@ -38,5 +38,5 @@ export interface UserTokenPayload {
 }
 
 export interface GetUsersParams {
-  direct: boolean
+  direct: string
 }
