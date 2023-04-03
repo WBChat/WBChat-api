@@ -1,17 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import { getDbParams } from 'src/helpers/handleGridParams'
 import { TQueryGridParams } from 'src/types/gridParams'
 
 import { getUserViewData } from './helpers'
 import { User, UserDocument } from './schemas/user.schema'
-import {
-  GetUsersParams,
-  TCreateUserData,
-  TUserRole,
-  UsersListResponse,
-} from './types'
+import { TCreateUserData, TUserRole, UsersListResponse } from './types'
 
 @Injectable()
 export class UsersService {
@@ -35,6 +30,7 @@ export class UsersService {
 
     const newUser = new this.userModel({
       ...createUserData,
+      _id: new mongoose.Types.ObjectId(),
       role,
       status: '',
       avatar: '',
@@ -45,16 +41,9 @@ export class UsersService {
   }
 
   public async getUsersList(
-    params?: TQueryGridParams & GetUsersParams,
+    params?: TQueryGridParams,
   ): Promise<UsersListResponse> {
     const { pagination, filters } = getDbParams<UserDocument>(params)
-
-    if (params?.direct === 'true') {
-      return {
-        list: [],
-        count: 0,
-      }
-    }
 
     const users = (
       await this.userModel.find(filters ?? {}, null, pagination)

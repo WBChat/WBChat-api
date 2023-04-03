@@ -1,8 +1,9 @@
+import { Request } from 'express'
 import { UserTokenPayload } from 'src/core/Users/types'
 
-export interface CommonRequest {
+export type CommonRequest = {
   headers: {
     authorization?: string
   }
   user: UserTokenPayload
-}
+} & Request

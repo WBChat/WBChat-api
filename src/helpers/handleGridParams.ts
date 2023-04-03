@@ -8,8 +8,8 @@ import {
 export const getDbParams = <T>(
   params?: TQueryGridParams,
 ): QueryGridFilters<T> => {
-  const page = params?.page ?? 0
-  const pageSize = params?.pageSize ?? 10
+  const page = params?.page
+  const pageSize = params?.pageSize
   const search = {
     fields: Array.isArray(params?.searchFields)
       ? params?.searchFields
@@ -17,10 +17,13 @@ export const getDbParams = <T>(
     value: params?.searchValue,
   }
 
-  const pagination = {
-    limit: pageSize,
-    skip: page * pageSize,
-  }
+  const pagination =
+    page && pageSize
+      ? {
+          limit: pageSize,
+          skip: page * pageSize,
+        }
+      : undefined
 
   const filter = Array.isArray(params?.filter)
     ? params?.filter

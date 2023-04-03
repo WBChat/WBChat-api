@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { ObjectId } from 'mongoose'
 import { TGridResponse } from 'src/types/gridParams'
 
 import { TUserRegistration } from '../Auth/types'
@@ -12,10 +13,10 @@ export enum TUserRole {
 
 export class UserViewData {
   @ApiProperty({ type: String })
-  first_name: string
+  _id: ObjectId
 
   @ApiProperty({ type: String })
-  last_name: string
+  username: string
 
   @ApiProperty({ type: String })
   status: string
@@ -35,8 +36,4 @@ export class UsersListResponse extends TGridResponse {
 export interface UserTokenPayload {
   email: string
   _id: string
-}
-
-export interface GetUsersParams {
-  direct: string
 }

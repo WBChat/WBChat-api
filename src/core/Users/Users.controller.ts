@@ -11,7 +11,7 @@ import { TQueryGridParams } from 'src/types/gridParams'
 
 import { AuthGuard } from '../Auth/guards/AuthGuard'
 import { UsersService } from './Users.service'
-import { GetUsersParams, UsersListResponse } from './types'
+import { UsersListResponse } from './types'
 
 @ApiTags('Users Controller')
 @Controller('/users')
@@ -29,9 +29,7 @@ export class UsersController {
     required: false,
     type: Boolean,
   })
-  getUsersList(
-    @Query() query: TQueryGridParams & GetUsersParams,
-  ): Promise<UsersListResponse> {
+  getUsersList(@Query() query: TQueryGridParams): Promise<UsersListResponse> {
     return this.usersService.getUsersList(query)
   }
 }
