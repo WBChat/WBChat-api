@@ -9,7 +9,7 @@ import { ApiErrorResponse } from 'src/decorators/ErrorResponse.decorator'
 import { GridQueryParams } from 'src/decorators/GridQueryParams.decorator'
 import { TQueryGridParams } from 'src/types/gridParams'
 
-import { AuthGuard } from '../Auth/guards/AuthGuard'
+import { AuthGuard } from '../../guards/AuthGuard'
 import { UsersService } from './Users.service'
 import { UsersListResponse } from './types'
 

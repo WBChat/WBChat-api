@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, ObjectId } from 'mongoose'
 
 export type ChannelDocument = Channel & Document
 
 @Schema({ collection: 'channels' })
 export class Channel {
-  @Prop({ required: true, type: 'string' })
-  _id: string
+  @Prop({ required: true, type: 'ObjectId' })
+  _id: ObjectId
 
   @Prop({ required: true, type: 'string' })
   name: string

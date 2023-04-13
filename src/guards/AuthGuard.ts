@@ -20,6 +20,7 @@ export class AuthGuard implements CanActivate {
       const req = context.switchToHttp().getRequest<CommonRequest>()
 
       const authHeader = req.headers.authorization
+
       const token = authHeader?.split(' ')
 
       const user = this.jwtService.verify<UserTokenPayload>(token?.[1] ?? '')
@@ -27,6 +28,7 @@ export class AuthGuard implements CanActivate {
 
       return true
     } catch (e) {
+      console.log(e)
       throw new UnauthorizedException({ message: 'Token is not valid' })
     }
   }

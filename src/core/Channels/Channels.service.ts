@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { CommonRequest } from 'src/types/request'
 
 import { getChannelViewData } from './helpers'
 import { Channel, ChannelDocument } from './schemas/channel.schema'
-import { ChannelListResponse } from './types'
+import { ChannelListResponse, ChannelViewData } from './types'
 
 @Injectable()
 export class ChannelsService {
@@ -28,5 +28,17 @@ export class ChannelsService {
     return {
       channels,
     }
+  }
+
+  public async getChannelById(channelId: string): Promise<ChannelViewData> {
+    const channel = await this.channelsModel.findById(channelId)
+
+    if (!channel) {
+      throw new BadRequestException({
+        message: 'Channel with such id is already exist.',
+      })
+    }
+
+    return getChannelViewData(channel)
   }
 }
