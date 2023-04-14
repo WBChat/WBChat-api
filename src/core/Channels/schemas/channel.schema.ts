@@ -15,7 +15,7 @@ export class Channel {
   description?: string
 
   @Prop({ required: false, type: [String] })
-  members?: string[]
+  members: string[]
 
   @Prop({ required: false, type: 'boolean' })
   isCommon?: boolean

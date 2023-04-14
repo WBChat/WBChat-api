@@ -7,6 +7,9 @@ export class ChannelViewData {
   @ApiProperty({ type: 'string' })
   name: string
 
+  @ApiProperty({ type: [String] })
+  members: string[]
+
   @ApiProperty({ type: 'boolean', required: false })
   isCommon?: boolean
 

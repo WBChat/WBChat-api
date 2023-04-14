@@ -5,5 +5,6 @@ export const getChannelViewData = (channel: Channel): ChannelViewData => ({
   _id: String(channel._id),
   name: channel.name,
   isCommon: channel.isCommon,
+  members: channel.members,
   description: channel.description,
 })
