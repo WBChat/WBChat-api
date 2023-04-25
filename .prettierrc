@@ -8,6 +8,17 @@
   "arrowParens": "avoid",
   "importOrderSortSpecifiers": true,
   "importOrderSeparation": true,
-  "importOrder": ["^@core/(.)$", "<THIRD_PARTY_MODULES>", "^@server/(.)$", "^@ui/(.*)$", "^[./]"],
-  "importOrderParserPlugins": ["jsx", "typescript", "classProperties", "decorators-legacy"]
+  "importOrder": [
+    "^@core/(.)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@server/(.)$",
+    "^@ui/(.*)$",
+    "^[./]"
+  ],
+  "importOrderParserPlugins": [
+    "jsx",
+    "typescript",
+    "classProperties",
+    "decorators-legacy"
+  ]
 }
