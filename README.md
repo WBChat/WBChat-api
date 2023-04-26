@@ -75,3 +75,7 @@ Nest is [MIT licensed](LICENSE).
 ## Dev users
 
 - email: dev.test@test.com, password: passwordtest
+
+## Preview
+
+Render: https://wbchat-api.onrender.com
