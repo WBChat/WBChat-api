@@ -9,7 +9,7 @@ async function bootstrap(): Promise<void> {
   const PORT = process.env.PORT ?? 7071
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['https://wb-chat-ui.vercel.app/*', 'http://localhost:3000/*],
+      origin: ['https://wb-chat-ui.vercel.app/*', 'http://localhost:3000/*'],
     },
   })
 
