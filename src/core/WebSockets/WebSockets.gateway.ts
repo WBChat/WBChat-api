@@ -44,9 +44,9 @@ export class WebSockets {
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('edit-message')
   async editMessage(
-    @MessageBody() payload: { messageId: string; text: string, channelId: string },
+    @MessageBody() payload: { messageId: string; text: string, channelId: string } & { user: UserTokenPayload },
   ): Promise<void> {
-    await this.messagesService.editMessage(payload.messageId, payload.text);
+    await this.messagesService.editMessage(payload.messageId, payload.text, payload.user._id);
 
     this.server.to(payload.channelId).emit('message-edited', { payload })
   }
@@ -54,11 +54,11 @@ export class WebSockets {
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('delete-message')
   async deleteMessage(
-    @MessageBody() payload: { messageId: string, channelId: string },
+    @MessageBody() payload: { messageId: string, channelId: string } & { user: UserTokenPayload },
   ): Promise<void> {
-    await this.messagesService.deleteMessage(payload.messageId);
+    await this.messagesService.deleteMessage(payload.messageId, payload.user._id);
 
-    this.server.to(payload.channelId).emit('message-deleted', { payload })
+    this.server.to(payload.channelId).emit('message-deleted', payload)
   }
 
   @UseGuards(WsAuthGuard)

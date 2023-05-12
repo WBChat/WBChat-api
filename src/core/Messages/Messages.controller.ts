@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common'
-import { Delete, Get, Patch, Query, UseGuards } from '@nestjs/common/decorators'
+import { Delete, Get, Patch, Query, Request, UseGuards } from '@nestjs/common/decorators'
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -10,6 +10,7 @@ import { ApiErrorResponse } from 'src/decorators/ErrorResponse.decorator'
 import { GridQueryParams } from 'src/decorators/GridQueryParams.decorator'
 import { AuthGuard } from 'src/guards/AuthGuard'
 import { TQueryGridParams } from 'src/types/gridParams'
+import { CommonRequest } from 'src/types/request'
 
 import { MessagesService } from './Messages.service'
 import { Message } from './schemas/message.schema'
@@ -46,8 +47,8 @@ export class MessagesController {
     required: true,
     type: String,
   })
-  deleteMessage(@Query() query: { messageId: string }): Promise<void> {
-    return this.messagesService.deleteMessage(query.messageId)
+  deleteMessage(@Query() query: { messageId: string }, @Request() req: CommonRequest): Promise<void> {
+    return this.messagesService.deleteMessage(query.messageId, req.user._id)
   }
 
   @Patch('/message/edit')
@@ -65,7 +66,7 @@ export class MessagesController {
     required: true,
     type: String,
   })
-  editMessage(@Query() query: { messageId: string, text: string }): Promise<void> {
-    return this.messagesService.editMessage(query.messageId, query.text)
+  editMessage(@Query() query: { messageId: string, text: string }, @Request() req: CommonRequest): Promise<void> {
+    return this.messagesService.editMessage(query.messageId, query.text, req.user._id)
   }
 }
