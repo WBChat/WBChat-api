@@ -5175,6 +5175,11 @@ nest@^0.1.6:
   resolved "https://registry.yarnpkg.com/nest/-/nest-0.1.6.tgz#81aa0236f0ebc996523e5d3855c73dd382a2b255"
   integrity sha512-21378J/6pHB9EZMId5yz9DaxVj778pCHhzfXhRLLrLWZydpLgbsyxL5B5QyTSWJBk5L8XbiGgMvNZMb/qBySYg==
 
+nestjs-request-context@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/nestjs-request-context/-/nestjs-request-context-2.1.0.tgz#097808447193770eab24e1f46366047c1a8866eb"
+  integrity sha512-XSZ4CGjgVetyP0q6TSgu+urpUhS8hlY4UxDenPioqEhwpiLCjYFnWrp8NSJctn6NdON5d45LLKz/TN/5ZppL9w==
+
 no-case@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-3.0.4.tgz#d361fd5c9800f558551a8369fc0dcd4662b6124d"

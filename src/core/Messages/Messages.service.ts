@@ -1,8 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { BadRequestException } from '@nestjs/common/exceptions'
-import { REQUEST } from '@nestjs/core'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { RequestContext } from 'nestjs-request-context/dist/request-context.model'
 import { getDbParams } from 'src/helpers/handleGridParams'
 import { TQueryGridParams } from 'src/types/gridParams'
 import { CommonRequest } from 'src/types/request'
@@ -14,7 +13,6 @@ export class MessagesService {
   constructor(
     @InjectModel(Message.name)
     private messagesModel: Model<MessageDocument>,
-    @Inject(REQUEST) private readonly request: CommonRequest,
   ) {}
 
   public async createMessage(message: Message): Promise<void> {
@@ -37,8 +35,9 @@ export class MessagesService {
 
   public async deleteMessage(messageId: string): Promise<void> {
     const message = await this.messagesModel.findOne({ _id: messageId })
+    const req = RequestContext.currentContext.req as CommonRequest
 
-    if (!message || message.sender !== this.request.user._id) {
+    if (!message || message.sender !== req.user._id) {
       throw new BadRequestException({
         message:
           'You dont have permission to delete this message or message does not exit.',

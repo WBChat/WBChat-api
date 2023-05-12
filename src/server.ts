@@ -8,7 +8,9 @@ import { FilterModel, SearchModel } from './types/gridParams'
 async function bootstrap(): Promise<void> {
   const PORT = process.env.PORT ?? 7071
   const app = await NestFactory.create(AppModule, {
-    cors: false,
+    cors: {
+      origin: '*',
+    },
   })
 
   app.useGlobalPipes(new ValidationPipe())
