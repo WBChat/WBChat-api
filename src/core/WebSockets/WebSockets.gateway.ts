@@ -13,7 +13,7 @@ import { MessagesService } from '../Messages/Messages.service'
 import { TSendMessageRequest } from '../Messages/types'
 import { UserTokenPayload } from '../Users/types'
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: false })
 export class WebSockets {
   @WebSocketServer()
   server: Server
