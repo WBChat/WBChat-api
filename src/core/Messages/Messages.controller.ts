@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common'
-import { Delete, Get, Query, UseGuards } from '@nestjs/common/decorators'
+import { Delete, Get, Patch, Query, UseGuards } from '@nestjs/common/decorators'
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -48,5 +48,24 @@ export class MessagesController {
   })
   deleteMessage(@Query() query: { messageId: string }): Promise<void> {
     return this.messagesService.deleteMessage(query.messageId)
+  }
+
+  @Patch('/message/edit')
+  @ApiErrorResponse()
+  @UseGuards(AuthGuard)
+  @ApiOkResponse({ status: 200 })
+  @ApiBearerAuth()
+  @ApiQuery({
+    name: 'messageId',
+    required: true,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'text',
+    required: true,
+    type: String,
+  })
+  editMessage(@Query() query: { messageId: string, text: string }): Promise<void> {
+    return this.messagesService.editMessage(query.messageId, query.text)
   }
 }

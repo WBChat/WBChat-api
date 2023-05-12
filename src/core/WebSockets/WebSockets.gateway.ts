@@ -42,6 +42,26 @@ export class WebSockets {
   }
 
   @UseGuards(WsAuthGuard)
+  @SubscribeMessage('edit-message')
+  async editMessage(
+    @MessageBody() payload: { messageId: string; text: string, channelId: string },
+  ): Promise<void> {
+    await this.messagesService.editMessage(payload.messageId, payload.text);
+
+    this.server.to(payload.channelId).emit('message-edited', { payload })
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('delete-message')
+  async deleteMessage(
+    @MessageBody() payload: { messageId: string, channelId: string },
+  ): Promise<void> {
+    await this.messagesService.deleteMessage(payload.messageId);
+
+    this.server.to(payload.channelId).emit('message-deleted', { payload })
+  }
+
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('connect-to-channel')
   connectToChannel(
     @MessageBody() payload: { channelId: string; user: UserTokenPayload },

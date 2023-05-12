@@ -46,4 +46,18 @@ export class MessagesService {
 
     await this.messagesModel.deleteOne({ _id: messageId })
   }
+
+  public async editMessage(messageId: string, text: string): Promise<void> {
+    const message = await this.messagesModel.findOne({ _id: messageId })
+    const req = RequestContext.currentContext.req as CommonRequest
+
+    if (!message || message.sender !== req.user._id) {
+      throw new BadRequestException({
+        message:
+          'You dont have permission to edit this message or message does not exit.',
+      })
+    }
+
+    await this.messagesModel.updateOne({ _id: messageId }, { text })
+  }
 }
