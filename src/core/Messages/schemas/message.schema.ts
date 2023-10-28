@@ -23,8 +23,12 @@ export class Message {
   text: string
 
   @Prop({ required: true, type: Number })
-  @ApiProperty({ required: true, type: String })
+  @ApiProperty({ required: true, type: Number })
   sendedDate: number
+
+  @Prop({ required: false, type: Object })
+  @ApiProperty({ required: false, type: Object })
+  reactions?: Record<string, {count: number, user_ids: string[]}>
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message)

@@ -62,6 +62,26 @@ export class WebSockets {
   }
 
   @UseGuards(WsAuthGuard)
+  @SubscribeMessage('add-message-reaction')
+  async addMessageReaction(
+    @MessageBody() payload: { messageId: string, reaction: string, channelId: string } & { user: UserTokenPayload },
+  ): Promise<void> {
+    await this.messagesService.addMessageReaction(payload.messageId, payload.reaction, payload.user._id);
+
+    this.server.to(payload.channelId).emit('message-reaction-added', {...payload, userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('remove-message-reaction')
+  async removeMessageReaction(
+    @MessageBody() payload: { messageId: string, reaction: string, channelId: string } & { user: UserTokenPayload },
+  ): Promise<void> {
+    await this.messagesService.removeMessageReaction(payload.messageId, payload.reaction, payload.user._id);
+
+    this.server.to(payload.channelId).emit('message-reaction-removed', {...payload, userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('connect-to-channel')
   connectToChannel(
     @MessageBody() payload: { channelId: string; user: UserTokenPayload },

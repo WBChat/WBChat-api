@@ -11,7 +11,7 @@ import { TQueryGridParams } from 'src/types/gridParams'
 
 import { AuthGuard } from '../../guards/AuthGuard'
 import { UsersService } from './Users.service'
-import { UsersListResponse } from './types'
+import { UserViewData, UsersListResponse } from './types'
 
 @ApiTags('Users Controller')
 @Controller('/users')
@@ -31,5 +31,19 @@ export class UsersController {
   })
   getUsersList(@Query() query: TQueryGridParams): Promise<UsersListResponse> {
     return this.usersService.getUsersList(query)
+  }
+
+  @Get('/user')
+  @ApiErrorResponse()
+  @UseGuards(AuthGuard)
+  @ApiOkResponse({ type: UserViewData, status: 200 })
+  @ApiBearerAuth()
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    type: String,
+  })
+  getUser(@Query() query: {id: string}): Promise<UserViewData> {
+    return this.usersService.getUserDataById(query.id)
   }
 }

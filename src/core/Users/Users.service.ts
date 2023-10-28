@@ -6,14 +6,26 @@ import { TQueryGridParams } from 'src/types/gridParams'
 
 import { getUserViewData } from './helpers'
 import { User, UserDocument } from './schemas/user.schema'
-import { TCreateUserData, TUserRole, UsersListResponse } from './types'
+import { TCreateUserData, TUserRole, UserViewData, UsersListResponse } from './types'
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   public async getUserByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email: email }).exec()
+    return this.userModel.findOne({ email }).exec()
+  }
+
+  public async getUserDataById(id: string): Promise<UserViewData> {
+    const user = await this.userModel.findOne({ _id: id }).exec()
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found.',
+      })
+    }
+
+    return getUserViewData(user);
   }
 
   public async createUser(
