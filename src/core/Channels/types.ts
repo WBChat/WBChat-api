@@ -10,11 +10,16 @@ export class ChannelViewData {
   @ApiProperty({ type: [String] })
   members: string[]
 
-  @ApiProperty({ type: 'boolean', required: false })
-  isCommon?: boolean
-
   @ApiProperty({ type: 'string', required: false })
   description?: string
+}
+
+export class TCreateChannelData {
+  @ApiProperty({ type: String })
+  channelName: string
+
+  @ApiProperty({ type: String })
+  teamId: string
 }
 
 export class ChannelListResponse {

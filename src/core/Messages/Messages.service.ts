@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { getDbParams } from 'src/helpers/handleGridParams'
-import { TQueryGridParams } from 'src/types/gridParams'
 
 import { Message, MessageDocument } from './schemas/message.schema'
 
@@ -17,22 +15,14 @@ export class MessagesService {
     await this.messagesModel.create(message)
   }
 
-  public async getChannelMessages(
-    params?: TQueryGridParams & { channelId: string },
-  ): Promise<Message[]> {
-    const { pagination, filters } = getDbParams<MessageDocument>(params)
-
-    const messages = await this.messagesModel.find(
-      filters ?? {},
-      null,
-      pagination,
-    )
+  public async getChannelMessages(channelId: string): Promise<Message[]> {
+    const messages = await this.messagesModel.find({channel_id: channelId})
 
     return messages
   }
 
   public async deleteMessage(messageId: string, userId: string): Promise<void> {
-    const message = await this.messagesModel.findOne({ _id: messageId })
+    const message = await this.messagesModel.findById(messageId)
 
     if (!message || message.sender !== userId) {
       throw new BadRequestException({

@@ -9,7 +9,6 @@ import {
 import { ApiErrorResponse } from 'src/decorators/ErrorResponse.decorator'
 import { GridQueryParams } from 'src/decorators/GridQueryParams.decorator'
 import { AuthGuard } from 'src/guards/AuthGuard'
-import { TQueryGridParams } from 'src/types/gridParams'
 import { CommonRequest } from 'src/types/request'
 
 import { MessagesService } from './Messages.service'
@@ -32,9 +31,9 @@ export class MessagesController {
     type: String,
   })
   getChannelMessages(
-    @Query() query: TQueryGridParams & { channelId: string },
+    @Query() query: { channelId: string },
   ): Promise<Message[]> {
-    return this.messagesService.getChannelMessages(query)
+    return this.messagesService.getChannelMessages(query.channelId)
   }
 
   @Delete('/message/delete')

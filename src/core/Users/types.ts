@@ -24,7 +24,7 @@ export class UserViewData {
   @ApiProperty({ type: String })
   avatar: string
 
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   created: number
 }
 
