@@ -9,7 +9,7 @@ import { LicenseKey, LicenseKeyDocument } from './schemas/license_key.schema'
 import { JwtService } from '@nestjs/jwt'
 import { LicenseKeyDecoded, LicenseKeyStatus, TeamViewData } from './types'
 import { getTeamViewData } from './helpers'
-import { MailService } from '../Mail/mail.service'
+import { MailService } from '../Mail/Mail.service'
 import { UserTokenPayload } from '../Users/types'
 import { UsersService } from '../Users/Users.service'
 
