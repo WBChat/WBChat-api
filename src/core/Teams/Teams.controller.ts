@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import {
     ApiBearerAuth,
     ApiBody,
@@ -10,6 +10,7 @@ import { TeamsService } from './Teams.service'
 import { ApiErrorResponse } from 'src/decorators/ErrorResponse.decorator'
 import { AuthGuard } from 'src/guards/AuthGuard'
 import { TCreateLicenseKey, TCreateTeamData, TeamListResponse } from './types'
+import { CommonRequest } from 'src/types/request'
 
 @ApiTags('Teams Controller')
 @Controller('/teams')
@@ -24,7 +25,7 @@ export class TeamsController {
   @ApiOkResponse({ status: 200 })
   createTeam(
     @Body() teamData: TCreateTeamData,
-  ): Promise<void> {
+  ): Promise<string> {
     return this.teamsService.createTeam(teamData.teamName, teamData.license_key)
   }
 
@@ -46,7 +47,18 @@ export class TeamsController {
   @ApiOkResponse({ status: 200 })
   createLicenseKey(
     @Body() keyData: TCreateLicenseKey,
-  ): Promise<void> {
+  ): Promise<string> {
     return this.teamsService.createLicenseKey(keyData.payment_token)
+  }
+
+  @Post('/send_email/license_key')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiErrorResponse()
+  @ApiOkResponse({ status: 200 })
+  sendLicenseKey(
+    @Request() req: CommonRequest
+  ): Promise<void> {
+    return this.teamsService.sendEmailWithLicenseKey(req.user)
   }
 }
