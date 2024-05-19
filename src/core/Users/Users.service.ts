@@ -61,7 +61,7 @@ export class UsersService {
       await this.userModel.find(filters ?? {}, null, pagination)
     ).map(getUserViewData)
 
-    const count = await this.userModel.count()
+    const count = await this.userModel.count(filters ?? {})
 
     return {
       list: users,

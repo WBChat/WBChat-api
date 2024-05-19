@@ -28,14 +28,14 @@ export const GridQueryParams = () => {
       },
     }),
     ApiQuery({
-      name: 'search',
+      name: 'searchValue',
       required: false,
-      explode: true,
-      style: 'form',
-      example: { searchValue: '', searchFields: ['level'] },
-      schema: {
-        $ref: getSchemaPath(SearchModel),
-      },
+      type: String
+    }),
+    ApiQuery({
+      name: 'searchFields',
+      required: false,
+      type: [String]
     }),
   )
 }

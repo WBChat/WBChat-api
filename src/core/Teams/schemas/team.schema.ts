@@ -12,6 +12,9 @@ export class Team {
   name: string
 
   @Prop({ required: true, type: 'string' })
+  owner_id: string
+
+  @Prop({ required: true, type: 'string' })
   license_key_id: string
 
   @Prop({ required: true, type: [String] })

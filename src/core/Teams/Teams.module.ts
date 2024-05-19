@@ -9,12 +9,14 @@ import { JwtModule } from '@nestjs/jwt'
 import { LicenseKey, LicenseKeySchema } from './schemas/license_key.schema'
 import { MailModule } from '../Mail/Mail.module'
 import { UsersModule } from '../Users/Users.module'
+import { User, UserSchema } from '../Users/schemas/user.schema'
 
 @Module({
   imports: [
     MailModule,
     UsersModule,
     MongooseModule.forFeature([{ name: Team.name, schema: TeamSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: LicenseKey.name, schema: LicenseKeySchema }]),
     JwtModule.registerAsync({
         useFactory: () => ({

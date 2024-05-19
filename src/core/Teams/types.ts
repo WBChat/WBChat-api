@@ -27,6 +27,9 @@ export class TCreateLicenseKey {
 export class TeamViewData {
     @ApiProperty({ type: 'string' })
     _id: string
+
+    @ApiProperty({ type: 'string' })
+    owner: string
   
     @ApiProperty({ type: 'string' })
     name: string

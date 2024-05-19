@@ -1,7 +1,8 @@
 import { Team } from "./schemas/team.schema";
 import { TeamViewData } from "./types";
 
-export const getTeamViewData = (channel: Team): TeamViewData => ({
-    _id: String(channel._id),
-    name: channel.name,
-  })
+export const getTeamViewData = (team: Team): TeamViewData => ({
+    _id: String(team._id),
+    name: team.name,
+    owner: String(team.owner_id)
+})
