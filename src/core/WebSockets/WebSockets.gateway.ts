@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common'
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
+import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import {
   ConnectedSocket,
   MessageBody,
@@ -12,17 +12,21 @@ import { WsAuthGuard } from 'src/guards/WsAuthGuard'
 import { MessagesService } from '../Messages/Messages.service'
 import { TSendMessageRequest } from '../Messages/types'
 import { UserTokenPayload } from '../Users/types'
+import { ChannelsService } from '../Channels/Channels.service'
+import { UsersService } from '../Users/Users.service'
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class WebSockets {
+export class WebSockets implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server
 
-  constructor(private readonly messagesService: MessagesService) {}
+  private clientsRooms: Record<string, string[]> = {}
+
+  constructor(private readonly messagesService: MessagesService, private readonly channelsService: ChannelsService, private readonly usersService: UsersService) {}
 
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('send-message')
@@ -82,12 +86,120 @@ export class WebSockets {
   }
 
   @UseGuards(WsAuthGuard)
+  @SubscribeMessage('connect-user-to-call-room')
+  async connectUserToCallRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { channelId: string; user: UserTokenPayload },
+  ): Promise<void> {
+    await client.join(`call-room__${payload.channelId}`)
+    await this.channelsService.addUserToCallRoom(payload.user._id, client.id, payload.channelId);
+    const socketIds = await this.channelsService.getCallRoomUsers(payload.channelId)
+    const userIds = Object.keys(socketIds)
+    const usersList = await this.usersService.getUsersByIds(userIds)
+    this.clientsRooms[client.id] = [...(this.clientsRooms[client.id] ?? []), `call-room__${payload.channelId}`]
+    this.server.to(client.id).emit('start-peer-connection', {users: usersList, socketIds})
+    this.server.to(`call-room__${payload.channelId}`).emit('call-room-users-list-updated', {users: usersList, socketIds })
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('disconnect-user-from-call-room')
+  async disconnectUserFromCallRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { channelId: string; user: UserTokenPayload },
+  ): Promise<void> {
+    await client.leave(`call-room__${payload.channelId}`)
+    await this.channelsService.removeUserFromCallRoom(payload.user._id, payload.channelId);
+    const userIds = Object.keys(await this.channelsService.getCallRoomUsers(payload.channelId))
+    const usersList = await this.usersService.getUsersByIds(userIds)
+    this.clientsRooms[client.id] = []
+    this.server.to(`call-room__${payload.channelId}`).emit('call-room-users-list-updated', {...payload, users: usersList})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('rpc-offer-send')
+  async rpcOfferSend(
+    @MessageBody() payload: { offer: any, to: string; user: UserTokenPayload },
+    @ConnectedSocket() client: Socket,
+  ): Promise<void> {
+    this.server.to(payload.to).emit('rpc-offer-sent', {offer: payload.offer, sender: client.id, userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('rpc-answer-send')
+  async rpcAnswerSend(
+    @MessageBody() payload: { answer: any, to: string, user: UserTokenPayload },
+  ): Promise<void> {
+    this.server.to(payload.to).emit('rpc-answer-sent', {answer: payload.answer, userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('peer-update')
+  async peerUpdated(
+    @MessageBody() payload: { candidate: any, to: string, user: UserTokenPayload },
+  ): Promise<void> {
+    console.log('peer-updated', payload)
+    this.server.to(payload.to).emit('peer-updated', {candidate: payload.candidate, userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('muted-audio')
+  async mutedAudio(
+    @MessageBody() payload: { user: UserTokenPayload, channelId: string },
+  ): Promise<void> {
+    this.server.to(`call-room__${payload.channelId}`).emit('muted-audio', {userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('unmuted-audio')
+  async unmutedAudio(
+    @MessageBody() payload: { user: UserTokenPayload, channelId: string },
+  ): Promise<void> {
+    this.server.to(`call-room__${payload.channelId}`).emit('unmuted-audio', {userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('muted-video')
+  async mutedVideo(
+    @MessageBody() payload: { user: UserTokenPayload, channelId: string },
+  ): Promise<void> {
+    this.server.to(`call-room__${payload.channelId}`).emit('muted-video', {userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('unmuted-video')
+  async unmutedVideo(
+    @MessageBody() payload: { user: UserTokenPayload, channelId: string },
+  ): Promise<void> {
+    this.server.to(`call-room__${payload.channelId}`).emit('unmuted-video', {userId: payload.user._id})
+  }
+
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('connect-to-channel')
   connectToChannel(
     @MessageBody() payload: { channelId: string; user: UserTokenPayload },
     @ConnectedSocket() client: Socket,
   ): void {
     client.join(payload.channelId)
+  }
+
+  handleDisconnect(client: Socket) {
+    const rooms = this.clientsRooms[client.id]
+
+    rooms?.forEach(async (room) => {
+      const channelId = room.split('__')[1]
+
+      const socketIds = await this.channelsService.getCallRoomUsers(channelId)
+
+      const userId = Object.keys(socketIds).find((key) => socketIds[key] === client.id)
+
+      if (!userId) {
+        return;
+      }
+
+      this.clientsRooms[client.id] = []
+
+      this.disconnectUserFromCallRoom(client, {user: {_id: userId, email: ''}, channelId})
+    })
   }
 
   @SubscribeMessage('test')

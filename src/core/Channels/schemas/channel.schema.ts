@@ -17,6 +17,9 @@ export class Channel {
   @Prop({ required: false, type: [String] })
   members: string[]
 
+  @Prop({ required: false, type: 'object' })
+  call_room_users: Record<string, string>
+
   @Prop({ required: true, type: Number })
   created: number
 }

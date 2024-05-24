@@ -17,6 +17,6 @@ import { Team, TeamSchema } from '../Teams/schemas/team.schema'
   ],
   controllers: [ChannelsController],
   providers: [ChannelsService],
-  exports: [],
+  exports: [ChannelsService],
 })
 export class ChannelsModule {}

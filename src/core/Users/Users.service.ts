@@ -52,6 +52,12 @@ export class UsersService {
     return newUser.save()
   }
 
+  public async getUsersByIds(
+    ids: string[],
+  ): Promise<UserViewData[]> {
+    return (await this.userModel.find({_id: {$in: ids}})).map(getUserViewData)
+  }
+
   public async getUsersList(
     params?: TQueryGridParams,
   ): Promise<UsersListResponse> {

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { Body, Query } from '@nestjs/common/decorators'
+import { Body, Inject, Query } from '@nestjs/common/decorators'
 import {
   ApiBearerAuth,
   ApiBody,
@@ -13,11 +13,13 @@ import { AuthGuard } from '../../guards/AuthGuard'
 import { ChannelsService } from './Channels.service'
 import { ChannelListResponse, ChannelViewData, TCreateChannelData } from './types'
 import { SuccessResponse } from 'src/types/responses'
+import { REQUEST } from '@nestjs/core'
+import { CommonRequest } from 'src/types/request'
 
 @ApiTags('Channels Controller')
 @Controller('/channels')
 export class ChannelsController {
-  constructor(private readonly channelsService: ChannelsService) {}
+  constructor(private readonly channelsService: ChannelsService, @Inject(REQUEST) private readonly request: CommonRequest) {}
 
   @Get('/my_channels')
   @ApiErrorResponse()
@@ -30,7 +32,7 @@ export class ChannelsController {
   @ApiOkResponse({ type: ChannelListResponse, status: 200 })
   @ApiBearerAuth()
   async getMyChannels(@Query() query: { teamId: string },): Promise<ChannelListResponse> {
-    const channels = await this.channelsService.getMyChannels(query.teamId);
+    const channels = await this.channelsService.getMyChannels(query.teamId, this.request.user);
     return { channels }
   }
 

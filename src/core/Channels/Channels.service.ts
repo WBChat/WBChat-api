@@ -8,6 +8,7 @@ import { getChannelViewData } from './helpers'
 import { Channel, ChannelDocument } from './schemas/channel.schema'
 import { ChannelViewData } from './types'
 import { Team, TeamDocument } from '../Teams/schemas/team.schema'
+import { UserTokenPayload } from '../Users/types'
 
 @Injectable()
 export class ChannelsService {
@@ -16,7 +17,6 @@ export class ChannelsService {
     private channelsModel: Model<ChannelDocument>,
     @InjectModel(Team.name)
     private teamsModel: Model<TeamDocument>,
-    @Inject(REQUEST) private readonly request: CommonRequest,
   ) {}
 
   public async createChannel(channelName: string, teamId: string): Promise<void> {
@@ -28,12 +28,43 @@ export class ChannelsService {
       })
     }
 
-    await this.channelsModel.create({_id: new mongoose.Types.ObjectId(), name: channelName, team_id: teamId, members: team.members, created: Date.now()})
+    await this.channelsModel.create({_id: new mongoose.Types.ObjectId(), name: channelName, team_id: teamId, members: team.members, call_room_users: [], created: Date.now()})
   }
 
-  public async getMyChannels(teamId: string): Promise<ChannelViewData[]> {
-    const user = this.request.user
+  public async addUserToCallRoom(userId: string, socketId: string, channelId: string): Promise<void> {
+    const channel = await this.channelsModel.findById(channelId);
 
+    if (!channel) {
+      return;
+    }
+
+    await this.channelsModel.updateOne({ _id: channelId }, { call_room_users: {...channel.call_room_users, [userId]: socketId} })
+  }
+
+  public async removeUserFromCallRoom(userId: string, channelId: string): Promise<void> {
+    const channel = await this.channelsModel.findById(channelId);
+
+    if (!channel || !channel.call_room_users[userId]) {
+      return;
+    }
+    delete channel.call_room_users[userId]
+
+    await this.channelsModel.updateOne({ _id: channelId }, { call_room_users: channel.call_room_users })
+  }
+
+  public async getCallRoomUsers(channelId: string): Promise<Record<string, string>> {
+    const channel = await this.channelsModel.findById(channelId);
+
+    if (!channel) {
+      throw new BadRequestException({
+        message: 'Channel with such id does not exist.',
+      })
+    }
+
+    return channel.call_room_users ?? {};
+  }
+
+  public async getMyChannels(teamId: string, user: UserTokenPayload): Promise<ChannelViewData[]> {
     const team = await this.teamsModel.findById(teamId)
 
     if (!team) {
@@ -42,7 +73,7 @@ export class ChannelsService {
       })
     }
 
-    const channels = await this.channelsModel.find({ team_id: teamId, members: user._id})
+    const channels = await this.channelsModel.find({ team_id: teamId })
 
     return channels.map(getChannelViewData);
   }
