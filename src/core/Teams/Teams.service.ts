@@ -49,6 +49,14 @@ export class TeamsService {
         })
     }
 
+    const sameNameTeamExist = await this.teamsModel.exists({name: teamName})
+
+    if (sameNameTeamExist) {
+      throw new BadRequestException({
+        message: 'Team with such name is already exist.',
+      })
+    }
+
     const user = this.request.user
     const team = await this.teamsModel.create({_id: new mongoose.Types.ObjectId(), name: teamName, members: [user._id], owner_id: user._id, created: Date.now(), license_key_id: key._id})
     

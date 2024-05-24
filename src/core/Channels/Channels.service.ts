@@ -28,6 +28,14 @@ export class ChannelsService {
       })
     }
 
+    const sameNameChannelExist = await this.channelsModel.exists({name: channelName, team_id: teamId})
+
+    if (sameNameChannelExist) {
+      throw new BadRequestException({
+        message: 'Channel with such name is already exist.',
+      })
+    }
+
     await this.channelsModel.create({_id: new mongoose.Types.ObjectId(), name: channelName, team_id: teamId, members: team.members, call_room_users: [], created: Date.now()})
   }
 
