@@ -13,7 +13,7 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   public async getUserByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email }).exec()
+    return this.userModel.findOne({ $or: [{ email }, { username: email }] }).exec()
   }
 
   public async getUserDataById(id: string): Promise<UserViewData> {
@@ -67,7 +67,7 @@ export class UsersService {
       await this.userModel.find(filters ?? {}, null, pagination)
     ).map(getUserViewData)
 
-    const count = await this.userModel.count(filters ?? {})
+    const count = await this.userModel.countDocuments(filters ?? {})
 
     return {
       list: users,

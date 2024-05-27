@@ -76,7 +76,7 @@ export class TeamsService {
       })
     }
 
-    await team?.delete()
+    await this.teamsModel.deleteOne({_id: teamId})
 
     return String(team?._id);
   }
@@ -133,7 +133,7 @@ export class TeamsService {
       })
     }
 
-    await team?.update({members: [...team?.members, memberId]})
+    await this.teamsModel.updateOne({_id: teamId}, {members: [...(team?.members ?? []), memberId]})
 
     return memberId;
   }
@@ -149,7 +149,7 @@ export class TeamsService {
       })
     }
 
-    await team.update({members: team.members.filter(id => id !== memberId)})
+    await this.teamsModel.updateOne({_id: teamId}, {members: team.members.filter(id => id !== memberId)})
 
     return memberId;
   }

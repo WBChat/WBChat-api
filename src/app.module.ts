@@ -8,6 +8,8 @@ import { MessagesModule } from './core/Messages/Messages.module'
 import { UsersModule } from './core/Users/Users.module'
 import { WebSocketsModule } from './core/WebSockets/WebSockets.module'
 import { TeamsModule } from './core/Teams/Teams.module'
+import { GridFsService } from './core/GridFsService/GridFsService.service'
+import { FilesModule } from './core/Files/Files.module'
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { TeamsModule } from './core/Teams/Teams.module'
       dbName: 'web-beer-chat-dev',
     }),
     WebSocketsModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

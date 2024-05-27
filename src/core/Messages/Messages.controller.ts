@@ -65,7 +65,7 @@ export class MessagesController {
     required: true,
     type: String,
   })
-  editMessage(@Query() query: { messageId: string, text: string }, @Request() req: CommonRequest): Promise<void> {
-    return this.messagesService.editMessage(query.messageId, query.text, req.user._id)
+  editMessage(@Query() query: { messageId: string, text: string, files: string[] }, @Request() req: CommonRequest): Promise<void> {
+    return this.messagesService.editMessage(query.messageId, query.text, query.files, req.user._id)
   }
 }

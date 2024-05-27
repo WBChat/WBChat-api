@@ -22,6 +22,10 @@ export class Message {
   @ApiProperty({ required: true, type: String })
   text: string
 
+  @Prop({ required: false, type: [String] })
+  @ApiProperty({ required: true, type: [String] })
+  files: string[]
+
   @Prop({ required: true, type: Number })
   @ApiProperty({ required: true, type: Number })
   sendedDate: number

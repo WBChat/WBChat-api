@@ -34,7 +34,7 @@ export class MessagesService {
     await this.messagesModel.deleteOne({ _id: messageId })
   }
 
-  public async editMessage(messageId: string, text: string, userId: string): Promise<void> {
+  public async editMessage(messageId: string, text: string, files: string[], userId: string): Promise<void> {
     const message = await this.messagesModel.findOne({ _id: messageId })
 
     if (!message || message.sender !== userId) {
@@ -44,7 +44,7 @@ export class MessagesService {
       })
     }
 
-    await this.messagesModel.updateOne({ _id: messageId }, { text })
+    await this.messagesModel.updateOne({ _id: messageId }, { text, files })
   }
 
   public async addMessageReaction(messageId: string, reaction: string, userId: string): Promise<void> {

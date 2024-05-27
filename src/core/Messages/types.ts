@@ -6,4 +6,7 @@ export class TSendMessageRequest {
 
   @ApiProperty({ type: String, required: true })
   text: string
+
+  @ApiProperty({ type: String, required: true })
+  files: string[]
 }

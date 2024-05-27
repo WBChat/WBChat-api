@@ -36,6 +36,7 @@ export class WebSockets implements OnGatewayDisconnect {
     const message = {
       _id: new mongoose.Types.ObjectId(),
       text: payload.text,
+      files: payload.files,
       sendedDate: Date.now(),
       sender: payload.user._id,
       channel_id: payload.recipientId,
@@ -48,9 +49,9 @@ export class WebSockets implements OnGatewayDisconnect {
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('edit-message')
   async editMessage(
-    @MessageBody() payload: { messageId: string; text: string, channelId: string } & { user: UserTokenPayload },
+    @MessageBody() payload: { messageId: string; text: string, files: string[], channelId: string } & { user: UserTokenPayload },
   ): Promise<void> {
-    await this.messagesService.editMessage(payload.messageId, payload.text, payload.user._id);
+    await this.messagesService.editMessage(payload.messageId, payload.text, payload.files, payload.user._id);
 
     this.server.to(payload.channelId).emit('message-edited', { payload })
   }
