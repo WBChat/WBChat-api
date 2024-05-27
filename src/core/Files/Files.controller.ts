@@ -1,14 +1,10 @@
 import {
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
-  Param,
   Post,
   Query,
   Res,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
@@ -17,8 +13,9 @@ import { ApiBody, ApiConsumes, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } f
 
 import { FilesService } from './files.service'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { GridFSFile, ObjectId } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { GetFilesByIdsResponse } from './types'
+import { AuthGuard } from 'src/guards/AuthGuard';
 
 @Controller('/attachment/files')
 @ApiTags('Attachments')
@@ -26,6 +23,7 @@ export class FilesController {
   constructor(private filesService: FilesService) {}
 
   @Post('upload')
+  @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -44,6 +42,7 @@ export class FilesController {
   }
 
   @Get('get-by-ids')
+  @UseGuards(AuthGuard)
   @ApiOkResponse({ type: [GetFilesByIdsResponse], status: 200 })
   @ApiQuery({
     name: 'ids',
