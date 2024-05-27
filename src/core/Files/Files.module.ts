@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FilesController } from './files.controller';
-import { FilesService } from './files.service'
+import { FilesController } from './Files.controller';
+import { FilesService } from './Files.service'
 import { GridFsService } from '../GridFsService/GridFsService.service';
 
 @Module({

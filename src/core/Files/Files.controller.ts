@@ -11,7 +11,7 @@ import {
 import { Response } from 'express';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { FilesService } from './files.service'
+import { FilesService } from './Files.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ObjectId } from 'mongodb'
 import { GetFilesByIdsResponse } from './types'
@@ -37,7 +37,7 @@ export class FilesController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: any) {
     return this.filesService.uploadFile(file.originalname, file.buffer)
   }
 
