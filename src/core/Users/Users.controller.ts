@@ -1,6 +1,8 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Inject, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
@@ -12,11 +14,14 @@ import { TQueryGridParams } from 'src/types/gridParams'
 import { AuthGuard } from '../../guards/AuthGuard'
 import { UsersService } from './Users.service'
 import { UserViewData, UsersListResponse } from './types'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { REQUEST } from '@nestjs/core'
+import { CommonRequest } from 'src/types/request'
 
 @ApiTags('Users Controller')
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, @Inject(REQUEST) private readonly request: CommonRequest) {}
 
   @Get('/list')
   @ApiErrorResponse()
@@ -45,5 +50,24 @@ export class UsersController {
   })
   getUser(@Query() query: {id: string}): Promise<UserViewData> {
     return this.usersService.getUserDataById(query.id)
+  }
+
+  @Post('change-user-avatar')
+  @UseGuards(AuthGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  updateAvatar(@UploadedFile() file: any) {
+    return this.usersService.changeUserAvatar(this.request.user._id, file.buffer)
   }
 }

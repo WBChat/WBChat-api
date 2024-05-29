@@ -1,12 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import mongoose, { Model } from 'mongoose'
+import {v2 as cloudinary} from 'cloudinary'
 import { getDbParams } from 'src/helpers/handleGridParams'
 import { TQueryGridParams } from 'src/types/gridParams'
 
 import { getUserViewData } from './helpers'
 import { User, UserDocument } from './schemas/user.schema'
 import { TCreateUserData, TUserRole, UserViewData, UsersListResponse } from './types'
+import { Readable } from 'stream'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class UsersService {
@@ -50,6 +53,31 @@ export class UsersService {
     })
 
     return newUser.save()
+  }
+
+  public async changeUserAvatar(userId: string, image: Buffer) {
+    return new Promise((res) => {
+      let cld_upload_stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "wb-chat"
+        },
+        async (error: any, result: any) => {
+          if (result) {
+            await this.userModel.updateOne({_id: new ObjectId(userId)}, { avatar: result.public_id })
+            res('ok')
+            return;
+          }
+          throw error
+         }
+       );
+  
+       const readStream = new Readable();
+  
+       readStream.push(image);
+       readStream.push(null);
+       readStream.pipe(cld_upload_stream)
+    })
+    
   }
 
   public async getUsersByIds(

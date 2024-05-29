@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient, GridFSBucket, Db } from 'mongodb';
-import mongoose from 'mongoose';
+import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class GridFsService {
@@ -12,6 +12,13 @@ export class GridFsService {
         this.client = new MongoClient(process.env.DB_CONNECTION_URL ?? '');
         this.db = this.client.db('web-beer-chat-dev')
         this.initBucket()
+
+        cloudinary.config({
+            secure: true, 
+            cloud_name: 'wb-chat',
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        });
     }
 
     initBucket() {

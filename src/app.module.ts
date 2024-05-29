@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import {v2 as cloudinary} from 'cloudinary'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 
@@ -8,7 +9,6 @@ import { MessagesModule } from './core/Messages/Messages.module'
 import { UsersModule } from './core/Users/Users.module'
 import { WebSocketsModule } from './core/WebSockets/WebSockets.module'
 import { TeamsModule } from './core/Teams/Teams.module'
-import { GridFsService } from './core/GridFsService/GridFsService.service'
 import { FilesModule } from './core/Files/Files.module'
 
 @Module({
